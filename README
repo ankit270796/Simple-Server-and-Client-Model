@@ -1,0 +1,18 @@
+Client
+``````
+Sockets are the endpoint for communication between client and server. Every client who has to talk to any node in the network needs to have a socket descriptor. Therefore, while implementing the client side of Echo-Server and Client model we need to create a socket. Socket is created using the SOCK()function.This function takes Address family, type and protocol as input. As we are comunicating over internet using TCP sockets. Hence, we pass AF_INET and SOCK_STREAM as input. SOCKET() function returns a negative value if the socket is not created sucessfully, else a positive value. Now, client has successfully created the socket and it needs to connect to the server that is other point of communication. SOCKADDR_IN structure holds the information of the other end e.g. Medium of communication(internet), Identification of the other host(IP), port(process ID). Client uses the information packed in the SOCKADDR_IN structure to identify and connect to the server. CONNECT() function is used to connect to the server. It returns 0 if the connection is successful else it returns -1. Once the client is connected to the server, it can start communicating. Client records it's message into a buffer which is then transferred to the server using WRITE() function. As it is an echo server, server echoes back the same message to the client. READ() function is used to read the reply from the server. Which is then printed onto the screen. When the client encounters EOF(end of file). It closes the connection using close() function.
+
+Server
+``````
+The server is implemented independent of address family (IPv6 and IPv4). The server uses the \texttt{getaddrinfo()} to populate the data structures for the socket functions. It later binds to the port specified as the command line argument. When a client connects to the server, it forks and creates a child process to handle the incoming client. When the client disconnects, the child process exits and the parent receives a \texttt{SIGCHLD} signal. This is handled by a signal handler [\texttt{void sigchld\_handler(int signo)}] which makes sure that the system doesn't create any zombie processes. The EOF character is processed in the client side and whenever the user enters the EOF character, the client closes the connection with the server.
+
+Usage
+`````
+$ make                    #For building the binaries
+$ ./echos 8888            #For executing the server
+$ ./echo  127.0.0.1 8888  #For executing the client
+
+Contribution:
+``````````````
+Mahesh Kallelil: Server, Makefile and Documentation
+Ankit Yadav    : Client
